@@ -1,0 +1,13 @@
+{
+  "name": "cadence",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "cd apps/api && uv run uvicorn app.main:app --reload --port 8000",
+    "dev:worker": "cd apps/api && uv run python -m app.worker",
+    "migrate": "cd apps/api && uv run alembic upgrade head",
+    "test:api": "cd apps/api && uv run pytest -q",
+    "build:web": "pnpm --filter web build"
+  }
+}
