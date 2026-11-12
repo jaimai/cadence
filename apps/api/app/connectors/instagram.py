@@ -70,7 +70,9 @@ class InstagramConnector(Connector):
         )
         return f"https://www.instagram.com/oauth/authorize?{query}"
 
-    async def exchange_code(self, code: str, redirect_uri: str) -> list[ConnectedAccount]:
+    async def exchange_code(
+        self, code: str, redirect_uri: str, state: str = ""
+    ) -> list[ConnectedAccount]:
         short = await self._request(
             "POST",
             "https://api.instagram.com/oauth/access_token",

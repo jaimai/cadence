@@ -41,3 +41,7 @@ extend-exclude = ["migrations"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 ignore = ["E741", "B008"]
+
+[tool.ruff.lint.per-file-ignores]
+# Long literal payloads read better on one line in tests.
+"tests/*" = ["E501"]

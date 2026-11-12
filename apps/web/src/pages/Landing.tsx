@@ -11,7 +11,8 @@ const NETWORKS = [
   { platform: "tiktok", label: "TikTok", note: "Plusieurs comptes" },
   { platform: "instagram", label: "Instagram", note: "Posts, carrousels, Reels" },
   { platform: "facebook", label: "Facebook", note: "Pages" },
-  { platform: "linkedin", label: "LinkedIn", note: "Bientôt" },
+  { platform: "linkedin", label: "LinkedIn", note: "Profil personnel" },
+  { platform: "x", label: "X", note: "Plusieurs comptes" },
 ];
 
 const FEATURES = [
@@ -135,7 +136,7 @@ export default function LandingPage() {
               <span className="text-brand-600">Un seul calendrier.</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600">
-              Planifie et publie le contenu de toutes tes apps sur TikTok, Instagram et Facebook, depuis une interface simple ou en le demandant à ton assistant IA.
+              Planifie et publie le contenu de toutes tes apps sur TikTok, Instagram, Facebook, LinkedIn et X, depuis une interface simple ou en le demandant à ton assistant IA.
             </p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link to="/signup" className={primary}>Créer mon espace <ArrowRight className="size-4" /></Link>
@@ -146,7 +147,7 @@ export default function LandingPage() {
         </section>
 
         <section aria-label="Réseaux pris en charge" className="border-y border-slate-100 bg-slate-50">
-          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-5 py-8 md:grid-cols-4">
+          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-5 py-8 sm:grid-cols-3 lg:grid-cols-5">
             {NETWORKS.map((n) => (
               <div key={n.platform} className="flex items-center gap-3">
                 <PlatformIcon platform={n.platform} className="size-10 shrink-0 text-sm" />

@@ -142,6 +142,8 @@ async def _ensure_fresh_token(
     connector = get_connector(account.platform)
     if connector is None or connector.refresh_margin is None or account.token_expires_at is None:
         return
+    if connector.needs_refresh_token and not account.refresh_token_enc:
+        return  # nothing to renew with: the account is reconnected when the token dies
     if account.token_expires_at > datetime.now(UTC) + margin:
         return
     await session.refresh(account, with_for_update=True)

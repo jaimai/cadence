@@ -10,8 +10,9 @@ import { AccountAvatar, Button, Card, Empty, ErrorNote, Modal, PageHeader, Platf
 const HINTS: Record<string, string> = {
   facebook: "Pages Facebook que tu administres.",
   instagram: "Comptes professionnels ou créateurs.",
-  linkedin: "Profil personnel et pages entreprise.",
+  linkedin: "Profil personnel.",
   tiktok: "Autant de comptes que tu veux, un par un.",
+  x: "Autant de comptes que tu veux, un par un.",
 };
 
 /**
@@ -149,7 +150,7 @@ export default function AccountsPage() {
   return (
     <>
       <PageHeader title="Comptes" subtitle="Connecte les réseaux sur lesquels tu veux publier." />
-      <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {platforms.data?.map((p) => (
           <Card key={p.platform} className="flex flex-col p-4">
             <PlatformIcon platform={p.platform} className="size-10 text-sm" />

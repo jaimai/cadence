@@ -116,6 +116,7 @@ const PLATFORM_STYLE: Record<string, { bg: string; letter: string }> = {
   instagram: { bg: "bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600", letter: "ig" },
   linkedin: { bg: "bg-[#0a66c2]", letter: "in" },
   tiktok: { bg: "bg-black", letter: "tt" },
+  x: { bg: "bg-slate-900", letter: "X" },
 };
 
 export function PlatformIcon({ platform, className }: { platform: string; className?: string }) {

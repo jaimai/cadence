@@ -54,7 +54,9 @@ class FacebookConnector(Connector):
         )
         return f"https://www.facebook.com/{self._s.meta_graph_version}/dialog/oauth?{query}"
 
-    async def exchange_code(self, code: str, redirect_uri: str) -> list[ConnectedAccount]:
+    async def exchange_code(
+        self, code: str, redirect_uri: str, state: str = ""
+    ) -> list[ConnectedAccount]:
         app = {"client_id": self._s.meta_app_id, "client_secret": self._s.meta_app_secret}
         token_url = f"{self._graph}/oauth/access_token"
         short = await self._request(

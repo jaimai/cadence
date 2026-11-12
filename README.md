@@ -11,10 +11,10 @@ l'interface web ou depuis un LLM via MCP. « Cadence » est un nom de travail.
 | Médiathèque (Cloudflare R2, ou disque local en dev) | fait |
 | Posts : brouillon, planification, publication, relance des échecs | fait |
 | Worker de publication (file d'attente dans Postgres) | fait |
-| Connecteurs **Facebook Pages**, **Instagram**, **TikTok** | faits, testés contre des API simulées, pas encore contre les vraies plateformes |
+| Connecteurs **Facebook Pages**, **Instagram**, **TikTok**, **LinkedIn**, **X** | faits, testés contre des API simulées, pas encore contre les vraies plateformes |
 | Serveur MCP (clé API) | fait |
 | Landing publique | fait |
-| Connecteur LinkedIn | à faire |
+| Pages entreprise LinkedIn | à faire (accès soumis à validation par LinkedIn) |
 | OAuth pour le connecteur MCP (ajout direct dans claude.ai) | à faire |
 
 ## Structure
@@ -64,7 +64,8 @@ peuvent pas les télécharger. Pour publier réellement un média, passer en `ST
 ## Connecter les réseaux
 
 Pour chaque réseau, l'URI de redirection à déclarer est
-`{API_BASE_URL}/api/oauth/<réseau>/callback` (`facebook`, `instagram`, `tiktok`).
+`{API_BASE_URL}/api/oauth/<réseau>/callback` (`facebook`, `instagram`, `tiktok`,
+`linkedin`, `x`).
 Tant que les identifiants d'un réseau manquent, son bouton « Connecter » est remplacé
 par un avertissement dans la page Comptes.
 
@@ -125,6 +126,43 @@ sur tiktok.com entre deux connexions. Le jeton d'accès dure 2 heures ; le worke
 renouvelle en continu, il doit donc tourner en permanence.
 
 Formats : une vidéo, ou jusqu'à 35 photos JPG ou WebP.
+
+### LinkedIn
+
+Publication sur le **profil personnel** uniquement.
+
+1. Créer une app sur developer.linkedin.com et y ajouter les produits
+   « Sign In with LinkedIn using OpenID Connect » et « Share on LinkedIn »
+   (scopes `openid`, `profile`, `w_member_social`).
+2. Renseigner `LINKEDIN_CLIENT_ID` et `LINKEDIN_CLIENT_SECRET`.
+
+Formats : texte seul, 1 à 20 images JPG ou PNG, ou une vidéo MP4 (500 Mo maximum
+côté LinkedIn). Texte limité à 3 000 caractères.
+
+Le jeton dure 60 jours. LinkedIn ne fournit un refresh token qu'à certaines apps :
+sans lui, le compte passe en « à reconnecter » à l'expiration. Les pages entreprise
+demandent la permission `w_organization_social`, accordée via la Community Management
+API après validation par LinkedIn ; elles ne sont pas gérées ici.
+
+`LINKEDIN_VERSION` fixe la version de l'API. LinkedIn retire chaque version au bout
+d'un an environ : à mettre à jour de temps en temps.
+
+### X
+
+1. Créer une app sur developer.x.com, activer l'authentification OAuth 2.0 en type
+   « Web App » avec les droits de lecture et d'écriture.
+2. Renseigner `X_CLIENT_ID` et `X_CLIENT_SECRET`.
+
+Scopes demandés : `tweet.read`, `tweet.write`, `users.read`, `media.write`,
+`offline.access`. Formats : texte seul, jusqu'à 4 images (JPG, PNG, WebP) ou une vidéo.
+Le texte est limité à `X_MAX_CHARS` caractères (280 par défaut) ; le décompte est un
+simple nombre de caractères, alors que X compte les liens et certains emojis autrement.
+
+L'accès en écriture à l'API X dépend de l'offre souscrite auprès de X : vérifier les
+quotas et le tarif en vigueur avant de s'appuyer dessus.
+
+LinkedIn et X reçoivent les fichiers envoyés par le serveur (et non une URL à
+télécharger) : ils fonctionnent donc aussi avec le stockage `local`.
 
 ## Utiliser depuis un LLM (MCP)
 

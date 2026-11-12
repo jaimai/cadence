@@ -141,7 +141,9 @@ class TikTokConnector(Connector):
             },
         )
 
-    async def exchange_code(self, code: str, redirect_uri: str) -> list[ConnectedAccount]:
+    async def exchange_code(
+        self, code: str, redirect_uri: str, state: str = ""
+    ) -> list[ConnectedAccount]:
         body = await self._token(
             grant_type="authorization_code", code=code, redirect_uri=redirect_uri
         )

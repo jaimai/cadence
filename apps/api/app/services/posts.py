@@ -6,6 +6,7 @@ from datetime import UTC, datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import get_settings
 from app.connectors import get_connector
 from app.connectors.base import MediaItem, PublishContent
 from app.models import Media, Post, PostMedia, PostTarget, SocialAccount, Workspace
@@ -21,13 +22,18 @@ def _aware(dt: datetime | None) -> datetime | None:
     return dt
 
 
+def _absolute(url: str) -> str:
+    """Local storage serves relative URLs; connectors need one they can fetch."""
+    return f"{get_settings().api_base_url.rstrip('/')}{url}" if url.startswith("/") else url
+
+
 def build_content(post: Post, target: PostTarget) -> PublishContent:
     storage = get_storage()
     return PublishContent(
         caption=target.caption_override if target.caption_override is not None else post.caption,
         media=[
             MediaItem(
-                url=storage.public_url(l.media.key),
+                url=_absolute(storage.public_url(l.media.key)),
                 kind=l.media.kind,
                 content_type=l.media.content_type,
             )

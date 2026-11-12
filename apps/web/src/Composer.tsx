@@ -27,6 +27,19 @@ function networkIssues(platforms: Set<string>, caption: string, media: Media[]):
     if (images.some((m) => m.content_type === "image/png")) issues.push("TikTok n'accepte que les photos JPG ou WebP.");
     if (videos.length > 0 && caption.length > 2200) issues.push("TikTok limite le texte d'une vidéo à 2 200 caractères.");
   }
+  if (platforms.has("linkedin")) {
+    if (images.length > 0 && videos.length > 0) issues.push("LinkedIn ne mélange pas photos et vidéo.");
+    if (videos.length > 1) issues.push("LinkedIn accepte une seule vidéo par post.");
+    if (images.some((m) => m.content_type === "image/webp")) issues.push("LinkedIn n'accepte que les images JPG ou PNG.");
+    if (videos.some((m) => m.content_type !== "video/mp4")) issues.push("LinkedIn n'accepte que les vidéos MP4.");
+    if (caption.length > 3000) issues.push("LinkedIn limite le texte à 3 000 caractères.");
+  }
+  if (platforms.has("x")) {
+    if (caption.length > 280) issues.push(`X limite le texte à 280 caractères (${caption.length} ici).`);
+    if (images.length > 4) issues.push("X accepte 4 images au maximum.");
+    if (images.length > 0 && videos.length > 0) issues.push("X ne mélange pas photos et vidéo.");
+    if (videos.length > 1) issues.push("X accepte une seule vidéo par post.");
+  }
   if (platforms.has("facebook")) {
     if (images.length > 0 && videos.length > 0) issues.push("Facebook ne mélange pas photos et vidéo.");
     if (videos.length > 1) issues.push("Facebook accepte une seule vidéo par post.");

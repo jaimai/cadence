@@ -20,6 +20,11 @@ os.environ.update(
     TIKTOK_CLIENT_KEY="",
     TIKTOK_CLIENT_SECRET="",
     TIKTOK_PRIVACY_LEVEL="SELF_ONLY",
+    LINKEDIN_CLIENT_ID="",
+    LINKEDIN_CLIENT_SECRET="",
+    X_CLIENT_ID="",
+    X_CLIENT_SECRET="",
+    X_MAX_CHARS="280",
 )
 os.environ["LOCAL_MEDIA_DIR"] = tempfile.mkdtemp(prefix="cadence-media-")
 os.environ["SECRET_KEY"] = "test-secret-key-that-is-long-enough-for-hs256"

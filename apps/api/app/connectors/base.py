@@ -66,6 +66,8 @@ class Connector(ABC):
     label: str
     # Renew tokens this long before they expire. None = tokens never expire.
     refresh_margin: timedelta | None = None
+    # True when renewal is only possible with a refresh token (not every app gets one).
+    needs_refresh_token: bool = False
 
     @property
     @abstractmethod
@@ -76,7 +78,10 @@ class Connector(ABC):
     def authorize_url(self, state: str, redirect_uri: str) -> str: ...
 
     @abstractmethod
-    async def exchange_code(self, code: str, redirect_uri: str) -> list[ConnectedAccount]: ...
+    async def exchange_code(
+        self, code: str, redirect_uri: str, state: str = ""
+    ) -> list[ConnectedAccount]:
+        """`state` is the value sent to authorize_url (needed by PKCE flows)."""
 
     @abstractmethod
     def validate(self, content: PublishContent) -> list[str]:

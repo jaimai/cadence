@@ -210,7 +210,7 @@ async def test_oauth_start_and_callback(client, workspace_id, monkeypatch):
     assert query["client_id"] == ["app-id"]
     assert query["redirect_uri"] == ["http://localhost:8000/api/oauth/facebook/callback"]
 
-    async def fake_exchange(code, redirect_uri):
+    async def fake_exchange(code, redirect_uri, state=""):
         assert code == "the-code"
         return [ConnectedAccount("p1", "Page 1", "t1"), ConnectedAccount("p2", "Page 2", "t2")]
 
@@ -225,7 +225,7 @@ async def test_oauth_start_and_callback(client, workspace_id, monkeypatch):
 
     r = await client.get("/api/oauth/facebook/callback?code=x&state=forged")
     assert "error=" in r.headers["location"]
-    assert (await client.get("/api/oauth/linkedin/start")).status_code == 404
+    assert (await client.get("/api/oauth/mastodon/start")).status_code == 404
     # Connector exists but its app keys are not configured.
     assert (await client.get("/api/oauth/tiktok/start")).status_code == 400
 
@@ -242,7 +242,7 @@ async def test_qr_link_connects_from_a_device_without_session(client, workspace_
     assert link["reachable"] is False  # API runs on localhost in tests
     path = urlparse(link["url"]).path
 
-    async def fake_exchange(code, redirect_uri):
+    async def fake_exchange(code, redirect_uri, state=""):
         return [ConnectedAccount("p1", "Page <1>", "t1")]
 
     monkeypatch.setattr(get_connector("facebook"), "exchange_code", fake_exchange)

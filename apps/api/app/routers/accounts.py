@@ -155,7 +155,7 @@ async def oauth_callback(
     if error or not code:
         return fail("Connexion annulée.")
     try:
-        connected = await connector.exchange_code(code, _redirect_uri(platform))
+        connected = await connector.exchange_code(code, _redirect_uri(platform), state)
     except ConnectorError as e:
         return fail(str(e))
     if not connected:

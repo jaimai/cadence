@@ -42,6 +42,16 @@ class Settings(BaseSettings):
     # Until the TikTok app passes its audit, only SELF_ONLY is accepted.
     tiktok_privacy_level: str = "SELF_ONLY"
 
+    linkedin_client_id: str = ""
+    linkedin_client_secret: str = ""
+    # LinkedIn API version (YYYYMM). Each one is retired after about a year.
+    linkedin_version: str = "202610"
+
+    x_client_id: str = ""
+    x_client_secret: str = ""
+    # 280 for standard accounts; raise it if your accounts have a paid plan.
+    x_max_chars: int = 280
+
     worker_poll_seconds: float = 10.0
     publish_max_attempts: int = 3
 
