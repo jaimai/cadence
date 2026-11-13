@@ -185,8 +185,9 @@ qu'un humain l'approuve. Le réglage « Publication directe » lève cette étap
 - **Médias** : bucket Cloudflare R2 exposé sur un domaine public, avec une règle CORS
   autorisant `PUT` depuis l'origine du front (le navigateur envoie les fichiers
   directement à R2).
-- **Front** : Cloudflare Pages, commande `pnpm build:web`, dossier `apps/web/dist`,
-  variable `VITE_API_URL`.
+- **Front** : Vercel. Importer le dépôt, régler « Root Directory » sur `apps/web`
+  (le reste est dans `apps/web/vercel.json`) et définir la variable `VITE_API_URL`
+  avec l'origine de l'API. Sans API en ligne, seule la landing fonctionne.
 
 Le front et l'API doivent partager le même domaine racine (`app.mondomaine.com` et
 `api.mondomaine.com`) : la session est un cookie `SameSite=Lax`, qui ne passe pas
