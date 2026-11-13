@@ -10,9 +10,10 @@ commande de démarrage ni second service à configurer.
 2. Dans le service créé : **Settings > Source > Root Directory** : `apps/api`.
    Railway y trouve le `Dockerfile` et construit l'image avec.
 
-## 2. Ajouter la base
+## 2. La base
 
-Dans le projet : **Create > Database > PostgreSQL**.
+Soit une base Railway (**Create > Database > PostgreSQL**), soit n'importe quelle
+base PostgreSQL existante dont tu mets l'adresse dans `DATABASE_URL`.
 
 ## 3. Variables du service
 
@@ -20,7 +21,7 @@ Dans **Variables**, ajoute :
 
 | Variable | Valeur |
 |---|---|
-| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` |
+| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}`, ou l'adresse de ta base (`postgresql://utilisateur:motdepasse@hote:5432/base`) |
 | `SECRET_KEY` | une longue valeur aléatoire (commande ci-dessous) |
 | `ENCRYPTION_KEY` | une clé de chiffrement (commande ci-dessous) |
 | `WEB_BASE_URL` | l'adresse du front, par exemple `https://ton-projet.vercel.app` |
@@ -85,8 +86,8 @@ Sans autre réglage, les fichiers importés sont écrits dans le conteneur et **
 
 - **Volume Railway** : ajoute un volume au service (par exemple monté sur `/data`).
   Les médias y sont rangés automatiquement. Suffisant pour LinkedIn et X.
-- **Cloudflare R2** : `STORAGE_BACKEND=r2` et les variables `R2_*`. Obligatoire pour
-  Instagram, TikTok et Facebook, qui téléchargent les médias par une URL publique.
+- **Cloudflare R2** : voir [`R2.md`](R2.md). Obligatoire pour Instagram, TikTok et
+  Facebook, qui téléchargent les médias par une URL publique.
 
 ## Mises à jour
 

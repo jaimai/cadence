@@ -3,6 +3,8 @@
   "framework": "vite",
   "outputDirectory": "dist",
   "rewrites": [
+    { "source": "/api/:path*", "destination": "https://web-production-51498752.up.railway.app/api/:path*" },
+    { "source": "/media-files/:path*", "destination": "https://web-production-51498752.up.railway.app/media-files/:path*" },
     { "source": "/((?!assets/|api/|mcp/|media-files/).*)", "destination": "/index.html" }
   ]
 }
