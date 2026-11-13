@@ -178,18 +178,19 @@ qu'un humain l'approuve. Le réglage « Publication directe » lève cette étap
 
 ## Déploiement
 
-- **API, worker et base** : alwaysdata. Le pas-à-pas est dans
-  [`apps/api/deploy/README.md`](apps/api/deploy/README.md). Un seul worker suffit ;
-  en lancer plusieurs est sans danger (`SKIP LOCKED`).
+- **API, worker et base** : au choix,
+  - Railway, un seul service construit depuis `apps/api/Dockerfile` :
+    [`apps/api/deploy/RAILWAY.md`](apps/api/deploy/RAILWAY.md) ;
+  - alwaysdata, en SSH : [`apps/api/deploy/README.md`](apps/api/deploy/README.md).
 - **Médias** : bucket Cloudflare R2 exposé sur un domaine public, avec une règle CORS
   autorisant `PUT` depuis l'origine du front (le navigateur envoie les fichiers
   directement à R2).
 - **Front** : Vercel. Importer le dépôt et régler « Root Directory » sur `apps/web`
   (le reste est dans `apps/web/vercel.json`). Vercel relaie `/api` vers l'API, ce qui
-  garde le cookie de session sur le domaine du front : voir le guide alwaysdata.
+  garde le cookie de session sur le domaine du front : voir le guide de l'hébergeur choisi.
 
 Après une modification des dépendances Python, régénérer `apps/api/requirements.txt`
-(utilisé sur alwaysdata) :
+(utilisé par l'image Docker et sur alwaysdata) :
 
 ```bash
 cd apps/api && uv export --no-dev --no-hashes --no-emit-project -o requirements.txt

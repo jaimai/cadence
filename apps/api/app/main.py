@@ -1,4 +1,6 @@
-from contextlib import asynccontextmanager
+import asyncio
+import logging
+from contextlib import asynccontextmanager, suppress
 from pathlib import Path
 
 from fastapi import FastAPI, Request
@@ -10,16 +12,37 @@ from app.config import get_settings
 from app.mcp_server import build_mcp_app, mcp
 from app.routers import accounts, auth, media, posts, settings
 from app.services.errors import DomainError
+from app.worker import run_forever
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with mcp.session_manager.run():
-        yield
+    worker = asyncio.create_task(run_forever()) if get_settings().embed_worker else None
+    try:
+        async with mcp.session_manager.run():
+            yield
+    finally:
+        if worker is not None:
+            worker.cancel()
+            with suppress(asyncio.CancelledError):
+                await worker
+
+
+def _configure_logging() -> None:
+    """Uvicorn only sets up its own loggers: give ours (worker, publisher) an output."""
+    log = logging.getLogger("cadence")
+    if log.handlers:
+        return
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter("%(levelname)s:     %(name)s: %(message)s"))
+    log.addHandler(handler)
+    log.setLevel(logging.INFO)
+    log.propagate = False
 
 
 def create_app() -> FastAPI:
     s = get_settings()
+    _configure_logging()
     app = FastAPI(title="Cadence API", lifespan=lifespan)
     app.add_middleware(
         CORSMiddleware,

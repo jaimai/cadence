@@ -1,6 +1,8 @@
+import os
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
@@ -58,6 +60,28 @@ class Settings(BaseSettings):
 
     worker_poll_seconds: float = 10.0
     publish_max_attempts: int = 3
+    # Run the publishing worker inside the API process (single-service hosting).
+    embed_worker: bool = False
+
+    @field_validator("database_url")
+    @classmethod
+    def _use_asyncpg(cls, url: str) -> str:
+        """Hosts hand out postgres:// or postgresql:// URLs; the app needs the asyncpg driver."""
+        for prefix in ("postgres://", "postgresql://"):
+            if url.startswith(prefix):
+                return "postgresql+asyncpg://" + url[len(prefix) :]
+        return url
+
+    @model_validator(mode="after")
+    def _railway_defaults(self) -> "Settings":
+        """On Railway, take the public address and the volume from what the platform provides."""
+        domain = os.environ.get("RAILWAY_PUBLIC_DOMAIN")
+        if domain and "api_base_url" not in self.model_fields_set:
+            self.api_base_url = f"https://{domain}"
+        volume = os.environ.get("RAILWAY_VOLUME_MOUNT_PATH")
+        if volume and "local_media_dir" not in self.model_fields_set:
+            self.local_media_dir = f"{volume.rstrip('/')}/media"
+        return self
 
 
 @lru_cache
