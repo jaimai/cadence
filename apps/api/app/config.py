@@ -1,10 +1,14 @@
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
+
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    # Absolute, so the API and the worker find it whatever directory they start in.
+    model_config = SettingsConfigDict(env_file=ENV_FILE, extra="ignore")
 
     database_url: str = "postgresql+asyncpg://cadence:cadence@localhost:5432/cadence"
     secret_key: str = "dev-secret-change-me"
