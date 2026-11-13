@@ -77,7 +77,12 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
     throw new ApiError("Serveur injoignable. Vérifie ta connexion.", 0);
   }
   if (res.status === 204) return undefined as T;
-  const data = await res.json().catch(() => null);
+  const data = await res.json().catch(() => undefined);
+  // A 200 that is not JSON is not our API answering: typically the host serving
+  // the app's HTML for /api because no API is configured.
+  if (data === undefined && (res.ok || res.status === 404)) {
+    throw new ApiError("Le serveur ne répond pas pour le moment.", 0);
+  }
   if (!res.ok) {
     const detail = data?.detail;
     const message =

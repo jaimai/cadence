@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { CalendarDays, Image, LayoutList, LogOut, Plus, Settings, Users } from "lucide-react";
 import { useCallback, useState } from "react";
 import { NavLink, Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import { api, ApiError } from "./api";
+import { api } from "./api";
 import Composer from "./Composer";
 import { ComposerContext, useMe, type ComposerRequest } from "./hooks";
 import AccountsPage from "./pages/Accounts";
@@ -12,7 +12,7 @@ import LandingPage from "./pages/Landing";
 import MediaPage from "./pages/Media";
 import PostsPage from "./pages/Posts";
 import SettingsPage from "./pages/Settings";
-import { Button, cx, ErrorNote, Spinner } from "./ui";
+import { Button, cx, Spinner } from "./ui";
 
 const NAV = [
   { to: "/", label: "Calendrier", icon: CalendarDays },
@@ -39,22 +39,17 @@ export default function App() {
   const openComposer = useCallback((request?: ComposerRequest) => setComposer(request ?? {}), []);
 
   if (me.isPending) return <Spinner />;
-  if (me.isError) {
-    if (me.error instanceof ApiError && me.error.status === 401) {
-      return (
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<AuthPage mode="login" />} />
-          <Route path="/signup" element={<AuthPage mode="signup" />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      );
-    }
+  // No session, or the API cannot be reached: visitors still get the public site,
+  // and signing in reports the problem. A signed-in user keeps the app through a
+  // passing API failure, since the last known session stays in `me.data`.
+  if (!me.data) {
     return (
-      <div className="mx-auto mt-24 max-w-sm space-y-3 text-center">
-        <ErrorNote>{me.error.message}</ErrorNote>
-        <Button onClick={() => me.refetch()}>Réessayer</Button>
-      </div>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<AuthPage mode="login" />} />
+        <Route path="/signup" element={<AuthPage mode="signup" />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
     );
   }
 
