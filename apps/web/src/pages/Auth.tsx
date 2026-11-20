@@ -67,6 +67,12 @@ export default function AuthPage({ mode }: { mode: "login" | "signup" }) {
         >
           {mode === "login" ? "Pas encore de compte ? Créer un compte" : "Déjà un compte ? Se connecter"}
         </Link>
+        {mode === "signup" && (
+          <p className="mt-4 text-center text-xs text-slate-500">
+            En créant un compte, tu acceptes les <Link to="/terms" className="underline">conditions d'utilisation</Link> et la{" "}
+            <Link to="/privacy" className="underline">politique de confidentialité</Link>.
+          </p>
+        )}
       </Card>
     </div>
   );

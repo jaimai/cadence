@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { CalendarDays, Image, LayoutList, LogOut, Plus, Settings, Users } from "lucide-react";
 import { useCallback, useState } from "react";
-import { NavLink, Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { NavLink, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { api } from "./api";
 import Composer from "./Composer";
 import { ComposerContext, useMe, type ComposerRequest } from "./hooks";
@@ -9,6 +9,7 @@ import AccountsPage from "./pages/Accounts";
 import AuthPage from "./pages/Auth";
 import CalendarPage from "./pages/Calendar";
 import LandingPage from "./pages/Landing";
+import LegalPage from "./pages/Legal";
 import MediaPage from "./pages/Media";
 import PostsPage from "./pages/Posts";
 import SettingsPage from "./pages/Settings";
@@ -35,8 +36,13 @@ export default function App() {
   const me = useMe();
   const client = useQueryClient();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [composer, setComposer] = useState<ComposerRequest | null>(null);
   const openComposer = useCallback((request?: ComposerRequest) => setComposer(request ?? {}), []);
+
+  // Public for everyone, signed in or not, and available even if the API is down.
+  if (pathname === "/terms") return <LegalPage kind="terms" />;
+  if (pathname === "/privacy") return <LegalPage kind="privacy" />;
 
   if (me.isPending) return <Spinner />;
   // No session, or the API cannot be reached: visitors still get the public site,

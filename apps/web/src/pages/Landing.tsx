@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Logo } from "../App";
 import { cx, PlatformIcon } from "../ui";
+import { LegalLinks } from "./Legal";
 
 const primary = "inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700";
 const secondary = "inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-50";
@@ -222,6 +223,7 @@ export default function LandingPage() {
       <footer className="border-t border-slate-100">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-8 text-sm text-slate-500 sm:flex-row">
           <Logo />
+          <LegalLinks />
           <p>© {new Date().getFullYear()} Cadence</p>
         </div>
       </footer>
